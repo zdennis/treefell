@@ -14,5 +14,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/zdennis/treefell'
   s.license     = 'MIT'
 
+  s.add_dependency "term-ansicolor", "~> 1.3"
   s.add_development_dependency 'rspec', '~> 3.4.0', '>= 3.4'
 end
