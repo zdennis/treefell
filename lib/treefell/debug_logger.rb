@@ -2,7 +2,7 @@ require 'treefell/color'
 
 module Treefell
   class DebugLogger
-    attr_reader :namespace
+    attr_reader :io, :namespace
 
     def initialize(namespace: nil, io: $stdout, color: Color.rotate)
       @namespace = namespace
@@ -22,7 +22,8 @@ module Treefell
 
     def ==(other)
       other.is_a?(DebugLogger) &&
-        other.namespace == namespace
+        other.namespace == namespace &&
+        other.io == io
     end
   end
 end

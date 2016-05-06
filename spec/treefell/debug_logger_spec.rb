@@ -59,4 +59,35 @@ describe Treefell::DebugLogger do
       end
     end
   end
+
+  describe '#== equality' do
+    it 'is equal to another instance created with no args' do
+      debug_logger_1 = described_class.new
+      debug_logger_2 = described_class.new
+      expect(debug_logger_1).to eq(debug_logger_2)
+      expect(debug_logger_2).to eq(debug_logger_1)
+    end
+
+    it 'is equal to another instance with equivalent namespace and io' do
+      io = StringIO.new
+      debug_logger_1 = described_class.new(namespace: 'foo', io: io)
+      debug_logger_2 = described_class.new(namespace: 'foo', io: io)
+      expect(debug_logger_1).to eq(debug_logger_2)
+      expect(debug_logger_2).to eq(debug_logger_1)
+    end
+
+    it 'is not equal when the namespaces differ' do
+      debug_logger_1 = described_class.new namespace: 'foo'
+      debug_logger_2 = described_class.new
+      expect(debug_logger_1).to_not eq(debug_logger_2)
+      expect(debug_logger_2).to_not eq(debug_logger_1)
+    end
+
+    it 'is not equal when the given io(s) differ' do
+      debug_logger_1 = described_class.new io: StringIO.new
+      debug_logger_2 = described_class.new io: StringIO.new
+      expect(debug_logger_1).to_not eq(debug_logger_2)
+      expect(debug_logger_2).to_not eq(debug_logger_1)
+    end
+  end
 end
