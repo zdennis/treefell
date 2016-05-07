@@ -58,6 +58,23 @@ describe Treefell::DebugLogger do
         expect(colors.uniq.length).to be 3
       end
     end
+
+    context 'when a filter is provided' do
+      let(:io){ StringIO.new }
+      let(:output){ io.tap(&:rewind).read }
+
+      it 'writes the message when the filter#call returns true' do
+        debug_logger = described_class.new(io: io, filter: proc { true })
+        debug_logger.puts 'this is a test'
+        expect(output).to eq("this is a test\n")
+      end
+
+      it 'does not write the message filter#call returns false' do
+        debug_logger = described_class.new(io: io, filter: proc { false })
+        debug_logger.puts 'this is a test'
+        expect(output).to_not include("this is a test")
+      end
+    end
   end
 
   describe '#== equality' do
@@ -76,6 +93,14 @@ describe Treefell::DebugLogger do
       expect(debug_logger_2).to eq(debug_logger_1)
     end
 
+    it 'is not equal when the filters are the same object' do
+      filter = proc { true }
+      debug_logger_1 = described_class.new filter: filter
+      debug_logger_2 = described_class.new filter: filter
+      expect(debug_logger_1).to eq(debug_logger_2)
+      expect(debug_logger_2).to eq(debug_logger_1)
+    end
+
     it 'is not equal when the namespaces differ' do
       debug_logger_1 = described_class.new namespace: 'foo'
       debug_logger_2 = described_class.new
@@ -86,6 +111,13 @@ describe Treefell::DebugLogger do
     it 'is not equal when the given io(s) differ' do
       debug_logger_1 = described_class.new io: StringIO.new
       debug_logger_2 = described_class.new io: StringIO.new
+      expect(debug_logger_1).to_not eq(debug_logger_2)
+      expect(debug_logger_2).to_not eq(debug_logger_1)
+    end
+
+    it 'is not equal when the filters differ' do
+      debug_logger_1 = described_class.new filter: proc { true }
+      debug_logger_2 = described_class.new filter: proc { true }
       expect(debug_logger_1).to_not eq(debug_logger_2)
       expect(debug_logger_2).to_not eq(debug_logger_1)
     end

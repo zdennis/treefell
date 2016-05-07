@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency "term-ansicolor", "~> 1.3"
   s.add_development_dependency 'rspec', '~> 3.4.0', '>= 3.4'
+  s.add_development_dependency 'climate_control', '~> 0.0.3'
 end
