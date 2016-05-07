@@ -15,11 +15,11 @@ module Treefell
     @env_var || DEFAULT_ENV_VAR
   end
 
-  def self.debug(namespace=nil, io: $stdout)
+  def self.debug(namespace=nil, io: $stdout, filter: nil)
     DebugLogger.new(
       namespace: namespace,
       io: io,
-      filter: Filters::EnvFilter.new(var_name: env_var)
+      filter: (filter || Filters::EnvFilter.new(var_name: env_var))
     )
   end
 end

@@ -1,6 +1,8 @@
 module Treefell
   module Filters
     class EnvFilter
+      WILDCARD = '*'
+
       attr_reader :var_name
 
       def initialize(var_name:)
@@ -8,8 +10,9 @@ module Treefell
       end
 
       def call(namespace, message)
-        return true if is_namespace_mentioned_in_env_var?(namespace)
-        false
+        value = ENV[@var_name]
+        is_mentioned?(namespace)
+        is_mentioned?(namespace) || is_mentioned?(WILDCARD)
       end
 
       def ==(other)
@@ -19,8 +22,12 @@ module Treefell
 
       private
 
-      def is_namespace_mentioned_in_env_var?(namespace)
-        ENV[@var_name].to_s.split(/\s*,\s*/).include?(namespace)
+      def var_value
+        @var_value  ||= ENV[@var_name]
+      end
+
+      def is_mentioned?(str)
+        var_value.to_s.split(/\s*,\s*/).include?(str)
       end
     end
   end
