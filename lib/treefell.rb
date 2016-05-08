@@ -5,21 +5,31 @@ require 'treefell/debug_logger'
 require 'treefell/filters/env_filter'
 
 module Treefell
-  DEFAULT_ENV_VAR = 'DEBUG'
+  ENV_VAR_LOOKUP = -> { ENV[Treefell.env_var] }
 
   def self.env_var=(env_var)
     @env_var = env_var
   end
 
   def self.env_var
-    @env_var || DEFAULT_ENV_VAR
+    @env_var || Treefell::EnvFilter::ENV_VAR_KEY
   end
 
   def self.debug(namespace=nil, io: $stdout, filter: nil)
-    DebugLogger.new(
+    filter ||= Filters::EnvFilter.new(value: ENV_VAR_LOOKUP)
+    @debug_loggers ||= {}
+    @debug_loggers[namespace] ||= DebugLogger.new(
       namespace: namespace,
       io: io,
-      filter: (filter || Filters::EnvFilter.new(var_name: env_var))
+      filter: filter
     )
+  end
+
+  def self.reset
+    @debug_loggers.clear
+  end
+
+  def self.[](namespace)
+    debug(namespace)
   end
 end

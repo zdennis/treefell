@@ -1,33 +1,29 @@
 module Treefell
   module Filters
     class EnvFilter
+      ENV_VAR_KEY = 'DEBUG'
+      ENV_VAR_LOOKUP = -> { ENV[ENV_VAR_KEY] }
       WILDCARD = '*'
 
-      attr_reader :var_name
-
-      def initialize(var_name:)
-        @var_name = var_name
+      def initialize(value: ENV_VAR_LOOKUP)
+        @value_proc = value
       end
 
       def call(namespace, message)
-        value = ENV[@var_name]
+        @value = @value_proc.call
         is_mentioned?(namespace)
         is_mentioned?(namespace) || is_mentioned?(WILDCARD)
       end
 
       def ==(other)
         other.is_a?(self.class) &&
-          other.var_name == var_name
+          other.instance_variable_get(:@value_proc) == @value_proc
       end
 
       private
 
-      def var_value
-        @var_value  ||= ENV[@var_name]
-      end
-
       def is_mentioned?(str)
-        var_value.to_s.split(/\s*,\s*/).include?(str)
+        @value.to_s.split(/\s*,\s*/).include?(str)
       end
     end
   end
