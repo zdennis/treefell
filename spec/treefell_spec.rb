@@ -62,4 +62,16 @@ describe Treefell do
     end
   end
 
+  describe '.env_var' do
+    it 'determines which env var is used to filter messages' do
+      ClimateControl.modify FOOBAR: 'baz' do
+        expect(Treefell['baz'].filter.call('baz', 'some message')).to be false
+
+        Treefell.env_var = 'FOOBAR'
+        expect(Treefell.env_var).to eq 'FOOBAR'
+
+        expect(Treefell['baz'].filter.call('baz', 'some message')).to be true
+      end
+    end
+  end
 end

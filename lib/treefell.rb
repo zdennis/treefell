@@ -12,7 +12,7 @@ module Treefell
   end
 
   def self.env_var
-    @env_var || Treefell::EnvFilter::ENV_VAR_KEY
+    @env_var || Filters::EnvFilter::ENV_VAR_KEY
   end
 
   def self.debug(namespace=nil, io: $stdout, filter: nil)
@@ -26,7 +26,8 @@ module Treefell
   end
 
   def self.reset
-    @debug_loggers.clear
+    @debug_loggers.clear if @debug_loggers
+    @env_var = nil
   end
 
   def self.[](namespace)
