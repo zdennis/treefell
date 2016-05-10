@@ -3,7 +3,7 @@ require 'stringio'
 
 describe Treefell do
   let(:default_filter) do
-    Treefell::Filters::EnvFilter.new(value: Treefell::ENV_VAR_LOOKUP)
+    Treefell::Filters::EnvFilter.new(value: Treefell::NAMESPACE_ENV_VAR_LOOKUP)
   end
 
   after(:each) do
@@ -62,13 +62,13 @@ describe Treefell do
     end
   end
 
-  describe '.env_var' do
+  describe '.namespace_env_var' do
     it 'determines which env var is used to filter messages' do
       ClimateControl.modify FOOBAR: 'baz' do
         expect(Treefell['baz'].filter.call('baz', 'some message')).to be false
 
-        Treefell.env_var = 'FOOBAR'
-        expect(Treefell.env_var).to eq 'FOOBAR'
+        Treefell.namespace_env_var = 'FOOBAR'
+        expect(Treefell.namespace_env_var).to eq 'FOOBAR'
 
         expect(Treefell['baz'].filter.call('baz', 'some message')).to be true
       end

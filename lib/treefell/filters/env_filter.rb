@@ -1,11 +1,11 @@
 module Treefell
   module Filters
     class EnvFilter
-      ENV_VAR_KEY = 'DEBUG'
-      ENV_VAR_LOOKUP = -> { ENV[ENV_VAR_KEY] }
+      NAMESPACE_ENV_VAR_KEY = 'DEBUG'
+      NAMESPACE_ENV_VAR_LOOKUP = -> { ENV[NAMESPACE_ENV_VAR_KEY] }
       WILDCARD = '*'
 
-      def initialize(value: ENV_VAR_LOOKUP)
+      def initialize(value: NAMESPACE_ENV_VAR_LOOKUP)
         @value_proc = value
       end
 
