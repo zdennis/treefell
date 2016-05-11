@@ -74,4 +74,28 @@ describe Treefell do
       end
     end
   end
+
+  describe 'redirecting output with an env var' do
+    let(:out_file) { 'tmp-out.txt' }
+
+    after(:each) { FileUtils.rm(out_file) if File.exists?(out_file) }
+
+    it 'writes to the file specified by TREEFELL_OUT' do
+      ClimateControl.modify TREEFELL_OUT: out_file, DEBUG: '*' do
+        Treefell['baz'].puts 'the rainbow is full of color'
+        expect(File.read(out_file)).to match /the rainbow is full of color\n/
+      end
+    end
+
+    it 'writes multiple namespaces to the same file' do
+      ClimateControl.modify TREEFELL_OUT: out_file, DEBUG: '*' do
+        Treefell['baz'].puts 'the rainbow is full of color'
+        Treefell['foo'].puts 'the sky is blue, sometimes gray'
+        Treefell['baz'].puts 'the skittles are delicious'
+        output = File.read(out_file)
+        expect(output).to match /the rainbow.*the sky.*skittles/m
+      end
+    end
+  end
+
 end
