@@ -12,6 +12,15 @@ module Treefell
       @filter = filter || DEFAULT_FILTER_PROC
     end
 
+    def [](sub_namespace)
+      @debug_loggers ||= {}
+      @debug_loggers[sub_namespace] ||= DebugLogger.new(
+        namespace: sub_namespace,
+        io: self,
+        filter: DEFAULT_FILTER_PROC
+      )
+    end
+
     def puts(message)
       if @filter.call(namespace, message)
         formatted_namespace = if namespace

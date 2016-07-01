@@ -122,4 +122,23 @@ describe Treefell::DebugLogger do
       expect(debug_logger_2).to_not eq(debug_logger_1)
     end
   end
+
+  describe '#[] - subloggers' do
+    subject(:debug_logger) do
+      described_class.new(namespace: namespace, io: io)
+    end
+    let(:namespace){ 'foo' }
+    let(:io){ StringIO.new }
+    let(:output){ io.tap(&:rewind).read }
+
+    it 'returns a new DebugLogger' do
+      expect(debug_logger['bar']).to be_kind_of(self.described_class)
+    end
+
+    it 'puts messages thru the top-level DebugLogger' do
+      debug_logger['bar'].puts 'hello there!'
+      output_without_ansi = ANSIString.new(output).without_ansi
+      expect(output_without_ansi).to eq('foo bar hello there!')
+    end
+  end
 end
