@@ -20,8 +20,17 @@ Gem::Specification.new do |s|
   s.test_files  = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]
 
+  # Be specific about these dependencies otherwise RubyGems may print
+  # following warning:
+  #
+  #    WARN: Unresolved specs during Gem::Specification.reset
+  #
+  # This warning is caused by RubyGems having multiple versions of a gem
+  # installed that could match requirements.
+  s.add_dependency "tins", "= 1.10.2"
+
   s.add_dependency "ansi_string", "~> 0.1"
-  s.add_dependency "term-ansicolor", "~> 1.3"
+  s.add_dependency "term-ansicolor", "~> 1.3.2"
   s.add_development_dependency 'rspec', '~> 3.4.0', '>= 3.4'
   s.add_development_dependency 'climate_control', '~> 0.0.3'
 end
